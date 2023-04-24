@@ -1,0 +1,245 @@
+# sysfonts::font_add(family = "Panton", regular = "3.img/Panton.otf")
+# # # sysfonts::font_add_google("Exo 2")
+# # thematic_shiny(font = "auto", accent = "darkcyan")
+# ui <- tagList(navbarPage(
+#                   #imageOutput("logo", height = "70px"),
+#                  'Панель управления "Умный город"',
+#                   theme = shinytheme("cyborg"),
+#                   useShinydashboard(),
+#                   tags$style(HTML("
+#     .tabbable > .nav > li > a                  {background-color: aqua;  color:black}
+#     .tabbable > .nav > li > a[data-value='Plot'] {background-color: black;   color:gray}
+#     .tabbable > .nav > li > a[data-value='Map'] {background-color: black;  color:gray}
+#     .tabbable > .nav > li > a[data-value='Contact Us'] {background-color: black;  color:gray}
+#     .tabbable > .nav > li > a[data-value='t3'] {background-color: green; color:white}
+#     .tabbable > .nav > li[class=active]    > a {background-color: black; color:white}
+#   ")),tags$style(HTML('body {font-family: "Panton"}')),#change 
+#       
+                  # tabPanel("Мониторинг",
+                  #          column(7, mapdeckOutput(outputId = "map", width = 3000, height = "95vh" ), style = "margin-top: -17px; margin-left: -30px;"),
+                           # column(2,tags$style("label{color: white;}"),
+                           #        selectizeInput(
+                           #          'indicator', label = "Choose  Y Indicator", choices = indicator_input,
+                           #          options = list(create = TRUE), selected = indicator_input[9], multiple = TRUE),
+                           #        mainPanel(plotlyOutput('map_plot', width = 734, height = 450), style = "margin-left: -13px;"),
+                           #        actionButton("button", "Clean citys", style = "margin-top: 500px;")
+                           # ),
+                           # column(2,tags$style("label{color: white;}"),
+                           #        uiOutput("id2")),
+                           # column(1, checkboxInput("norm", "Norm", value = FALSE),checkboxInput("test_check", "Chose x-label indicator", value = FALSE),
+                           #        checkboxInput("tf_vis", "2,5 D Visualisation", value = FALSE),
+                           #        uiOutput("test"))
+                           #     box(width = 5,background = "black",collapsible = TRUE,
+                           #     box(width = 6,background = "black",
+                           #       selectizeInput('indicator', label = "Выберите индикатор оси Y", choices = indicator_input,
+                           #                        options = list(create = TRUE), multiple = TRUE, selected = indicator_input[1]),
+                           #       checkboxInput("test_check", "Выберите индикатор оси X", value = FALSE),
+                           #       checkboxInput("tf_vis", "2,5-D визуализация", value = FALSE)),
+                           #     box(width = 6,background = "black", uiOutput("id2"), checkboxInput("norm", "Нормирование", value = FALSE)),
+                           #     box(width = 12, plotlyOutput('map_plot'), background = "black"),
+                           #     box(width = 3, actionButton("button", "Очистить сисок городоа"),background = "black" )
+                           #     )
+                           # 
+                           # ),
+#                   tabPanel("Оценка влияния",
+#                            setBackgroundColor(
+#                              color = "black"
+#                            ),
+#                            fluidRow(
+#                             
+#                              box(width = 3, background = "black",
+#                                  imageOutput("logo", height = "70px"),
+#                                  box(width = 12,solidHeader = FALSE,
+#                                      collapsible = TRUE, background = "black", title = "Настройки вывода",
+#                                      selectizeInput(
+#                                        'foo', label = "Выберите город", choices = location_inp_2,
+#                                        options = list(create = TRUE), selected = location_inp_2[1]
+#                                      ),uiOutput("id4"),
+#                                      selectizeInput(
+#                                        'fo', label = "Выберите целевой индикатор", choices = indicator_inp_2,
+#                                        options = list(create = TRUE), selected = indicator_inp_2[1]),
+#                                      checkboxInput("test_check2", "Выберите индикатор оси X", value = FALSE),uiOutput("id3"),
+#                                      ),
+#                                  box(width = 12,solidHeader = FALSE,
+#                                      collapsible = TRUE, background = "black", title = "Параметры ввода", selectizeInput(
+#                                    'f', label = "Выберите управляемый индикатор", choices = indicator_inp_2,
+#                                    options = list(create = TRUE), selected = indicator_inp_2[2]
+#                                  )),
+#                                  ),
+#                              tags$head(tags$style("#id7{color: white;
+#                                  font-size: 18px;
+#                                  font-family: Panton;
+#                                  }"
+#                              )
+#                              ),
+#                              box(width = 9, background = "black", textOutput("id7"),solidHeader = FALSE,
+#                                  box(width = 12,title = "Проекционный результат (целевые показатели)", plotlyOutput('dazzle'),background = "black",solidHeader = FALSE,
+#                                      collapsible = TRUE),
+#                                  box(width = 12,title = "Вход (регуляторы)", plotlyOutput("Draggable_Graph"),actionButton("button2", "Очистить воздействие"),background = "black",
+#                                      collapsible = TRUE,)),
+#                                  # box(width = 12,title = "Input (regulators)", plotlyOutput("Draggable_Graph"),background = "black",
+#                                  #     collapsible = TRUE,)),
+#                                 
+#                            ),
+#                            
+# 
+#                   ),
+#                   navbarMenu("Связаться с нами",
+#                              tabPanel(tags$li(a(href   = "https://www.the-digital-twin.com"     , target = "_blank", "Веб-сайт Digital Twin"))),
+#                              tabPanel(tags$li(a(href   = "https://t.me/DT_Prosha_Bot", target = "_blank", "Telegram-бот для умного города DigitalTwin"))),
+#                              tabPanel(tags$li(a(href   = "https://t.me/joinchat/vPvYdl_rvjIxZDFi", target = "_blank", "Фокус-группа пользователей для Telegram-бота The Smart City DigitalTwin"))),
+#                              tabPanel(tags$li(a(href   = "https://t.me/TheDigitalTwin", target = "_blank", "Телеграмм-канал цифрового двойника"))),
+#                              tabPanel(tags$li(a(href   = "mailto:shiny@dtwin.city"      , target = "_blank", "shiny@dtwin.city")))
+#                              
+#                              
+#                   ),
+#                   tags$style(type = 'text/css', '.navbar { background-color: #262626;
+#                                                font-family: Panton;
+#                                                font-size: 14px;
+#                                                color: #FF0000; }')
+#   
+#       
+# ))
+convertMenuItem <- function(mi,tabName) {
+  # mi <<- mi
+  mi$children[[1]]$attribs['data-toggle']="tab"
+  mi$children[[1]]$attribs['data-value'] = tabName
+  if(length(mi$attribs$class)>0 && mi$attribs$class=="treeview"){
+    mi$attribs$class=NULL
+  }
+  mi
+}
+
+# 2. UI                                 ####
+ui <- bs4DashPage(
+  dark = NULL,
+  # 2.1. Header                         ####
+  header = bs4DashNavbar(
+    tags$head(
+      includeCSS("www/CSS.css")
+    ),
+    tags$style(HTML(
+      "<script>
+           $( document ).ready(function() {
+              $(\".tab-content [type='checkbox']\").on('click', function(){
+                var is_checked = this.checked;
+                if(typeof is_checked === 'boolean' && is_checked === true){
+                  setTimeout(function() {
+                    window.scrollTo(0,document.body.scrollHeight);
+                  }, 200)
+                }
+              })
+           })
+        </script>")),
+    status = 'light',
+    controlbarIcon = shiny::icon("info"),
+    textOutput("texttitle")
+    #Не удаляйте пж
+    # bs4Dash::actionButton("help_button", "Справка по данному разделу", icon = icon("info"),status = "info", flat = TRUE)
+  ),#,status = "info"
+  # 2.2. Sidebar                        ####
+  sidebar = bs4DashSidebar(
+    minified = FALSE,
+    width = "300px",
+    
+    imageOutput("logo", height = "70px"),
+    bs4SidebarMenu(
+      id = "sbMenu",
+      tags$style(HTML('.sidebar{font-family: Panton;
+                                 color: black}
+                        a:hover{ background: #191a1a }
+                        }
+                      ')),
+      # 2.2.1. Menu                     ####
+      uiOutput("ui_output0"),
+      bs4SidebarMenuItem("Мониторинг",
+                         selectizeInput('indicator', label = "Выберите индикатор оси Y", choices = indicator_input,
+                                        options = list(create = TRUE), multiple = TRUE, selected = indicator_input[1]),
+                         materialSwitch("test_check", "Изменить ось X", value = FALSE,status = "warning"),
+                         selectizeInput(inputId = "indicator_second_indicator",
+                                        label = "Выберите индикатор оси X",
+                                        choices = indicator_input,
+                                        options = list(create = TRUE), selected = indicator_input[2], multiple = FALSE),
+                         materialSwitch("tf_vis", "2,5-D карта", value = FALSE,status = "warning"),
+                         materialSwitch("norm", "Нормировать", value = FALSE,status = "warning"),
+                         icon = icon("project-diagram"), tabName = 'monitoring'),
+      bs4SidebarMenuItem("Оценка влияния",
+                         selectizeInput('foo', label = "Выберите город",
+                                        choices = location_inp_2,
+                                        options = list(create = TRUE),
+                                        selected = location_inp_2[1]),
+                         materialSwitch("all_citys_check", "Показать все города", value = FALSE, status = "warning"),
+                         selectizeInput('fo', label = "Выберите целевой индикатор",
+                                        choices = indicator_inp_2,
+                                        options = list(create = TRUE),
+                                        selected = indicator_inp_2[1]),
+                         materialSwitch("test_check2", "Выбрать индикатор оси X", value = FALSE, status = "warning"),
+                         selectizeInput(inputId = "indicator_second_indicator2",
+                                        label = "Выберите индикатор оси X",
+                                        choices = indicator_inp_2,
+                                        options = list(create = TRUE), selected = indicator_inp_2[3], multiple = FALSE),
+                         selectizeInput('f', label = "Выберите управляемый индикатор",
+                                        choices = indicator_inp_2,
+                                        options = list(create = TRUE),
+                                        selected = indicator_inp_2[2]),
+                         icon = icon("project-diagram"), tabName = 'influense'),
+      shinyjs::hidden(bs4SidebarMenuItem("hiddenCharts", tabName = "monitoring")),
+      shinyjs::hidden(bs4SidebarMenuItem("hiddenCharts2", tabName = "influense"))
+    )
+  ),
+  # 2.3. Controlbar (left)              ####
+  controlbar = bs4DashControlbar(
+    tags$ol(
+      style = "font-size:12px;",
+      tags$h5 (tags$b("Ссылки", style = "margin-top: 15px; margin-bottom: 15px;")),
+      tags$li( a(href = "https://the-digital-twin.com/", target = "_blank", "Digital Twin's website")),  # tags$li(
+      tags$li( a(href = "https://teb.dtwin.city/"      , target = "_blank", "Energy Equilibrium")),  # tags$li(
+      tags$li( a(href = "https://esg.dtwin.city/"     , target = "_blank", "Influence of ESG on the city")),  # tags$li(
+      tags$li( a(href = "https://asset.dtwin.city/"   , target = "_blank", "Enterprise management")),  # tags$li(
+      tags$li( a(href = "https://energy.dtwin.city/"   , target = "_blank", "International energetics")),  # tags$li(
+      tags$li( a(href = "https://plan.dtwin.city/"   , target = "_blank", "Strategic Planning Platform")),  # tags$li(
+      tags$li( a(href = "https://www.linkedin.com/company/dtwin/mycompany/" , target = "_blank", "Linkedin developers"))  # tags$li(
+    )
+  ),
+  
+  # 2.4. Body                           ####
+  body = bs4DashBody(
+    shinyjs::useShinyjs(),
+    use_theme(create_theme(
+      bs4dash_status(light = "#787878"),
+      bs4dash_status(light = "#1c1c1c", primary = "#FFA500"),
+      bs4dash_vars(
+        navbar_light_color = "#787878",
+        navbar_light_active_color = "white",
+        navbar_light_hover_color = "white"
+      ),
+      bs4dash_sidebar_light(
+        bg = "white",
+        color = '#1c1c1c',
+        hover_color  = '#787878',
+        submenu_active_bg  = '#787878'
+          # header_color = 'black'
+      ),
+      bs4dash_sidebar_dark(
+        bg = "white",
+        color = '#1c1c1c',
+        hover_color  = '#787878',
+        submenu_active_bg   = '#787878'
+          # header_color = 'black'
+      ),
+      bs4dash_layout(
+        sidebar_width = "340px",
+        main_bg = "#1c1c1c"
+      ),
+      bs4dash_color(
+        gray_900 = "#FFF"
+      )
+    )),
+    bs4TabItems(
+      bs4TabItem(tabName = "monitoring",uiOutput("ui_0")),
+      bs4TabItem(tabName = "influense",uiOutput("ui_1"))
+    ),
+    tags$style(HTML('*{font-family: Panton}')),
+    uiOutput("ui_output")
+  )
+)

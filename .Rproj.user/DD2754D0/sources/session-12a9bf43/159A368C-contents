@@ -1,0 +1,10 @@
+# Автор: Н.Бураков
+# Компания: Цифровой Двойник 
+# Дата: Декабрь 2021
+# 1. Библиотеки               ####
+source("1.SourceAll.R", encoding = "UTF-8")
+
+source("ui.R", encoding = "UTF-8")
+source("server.R", encoding = "UTF-8")
+
+shinyApp(ui = ui, server = server,  options(shiny.port = 7775, shiny.host = '0.0.0.0'))

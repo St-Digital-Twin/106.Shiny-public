@@ -1,0 +1,653 @@
+server <- function(input, output, session) {
+  tcoy <- list(
+    family = "Panton",
+    size = 14,
+    color = 'black')
+  output$logo <- renderImage({
+    list(src = '3.img/17.png',
+         # contentType = 'image/png',
+         width = 150,
+         vspace = 5,
+         # # width = 400,
+         # height = 60,
+         alt = "www.dtwin.ru")
+
+  }, deleteFile = FALSE)
+  highlighting_city = reactiveVal(c("Краснодар"))
+  map_view_change = reactiveVal(c(103.986,63.133, 1.76))
+  indicator_input_for_map = reactiveVal("Численность населения на 1 января текущего года")
+  change_values_percent <- reactiveValues(
+    x = tibble(x = paste0("v", seq(2, 21)), value = rep(0,20)) %>% pivot_wider(names_from = x))
+
+
+  change_values_percent_vector = reactiveVal(rep(0,20))#hi
+
+  
+  # 2. Главный экран     ####
+  # 2.0.0 Международная энергетика####   
+  output$ui_0 <- renderUI({
+      fluidPage(
+        fluidRow(
+          bs4Card(width = 8, title = "Города на карте", collapsible = TRUE, background = 'gray-dark', style = 'background: #191a1a', mapdeckOutput(outputId = "map", height  = "440px") %>% withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500"),
+                  actionButton("button_clear", "Очистить города", style = "color: #ffffff; background-color: #FFA500; border-color: #FFA500")),
+          bs4Card(width = 4, title ="Рейтинг по показателю", textOutput("text1"),
+                  collapsible = TRUE, background = 'white',plotlyOutput('map_plot2') %>% withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500")),
+          bs4Card(width = 6, title = "Показатель во времени", collapsible = TRUE, background = 'gray-dark', plotlyOutput('map_plot') %>% withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500")),
+          bs4Card(width = 6, title = "Города в общем контексте", collapsible = TRUE, background = 'gray-dark',plotlyOutput('map_plot3') %>% withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500"))
+        )
+      )
+  })
+  # 2.0.1 Международная энергетика####  
+  output$ui_1 <- renderUI({
+      fluidPage(
+        fluidRow(
+          bs4Card(width = 12,title = "Проекционный результат (целевые показатели)", plotlyOutput('dazzle')%>% 
+                    withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500"),background = "gray-dark",solidHeader = FALSE,collapsible = TRUE),
+          bs4Card(width = 12,title = "Вход (регуляторы)", plotlyOutput("Draggable_Graph")%>% withSpinner(type = getOption("spinner.type", default = 6),color = "#FFA500"),
+                  actionButton("button2", "Очистить воздействие", style = "color: #ffffff; background-color: #FFA500; border-color: #FFA500"),
+                  background = "white",collapsible = TRUE)
+          
+        )
+      )
+  })
+  
+  observeEvent({input$indicator},{
+    indicator_input_for_map(input$indicator)
+  })
+  k <- func2(df)
+  circle2 <- reactiveValues(x = 2022, y = k$dyn_calc[which(k$year == 2022)])
+  circle3 <- reactiveValues(x = 2023, y = k$dyn_calc[which(k$year == 2023)])
+  circle4 <- reactiveValues(x = 2024, y = k$dyn_calc[which(k$year == 2024)])
+  circle5 <- reactiveValues(x = 2025, y = k$dyn_calc[which(k$year == 2025)])
+  circle6 <- reactiveValues(x = 2026, y = k$dyn_calc[which(k$year == 2026)])
+  circle7 <- reactiveValues(x = 2027, y = k$dyn_calc[which(k$year == 2027)])
+  circle8 <- reactiveValues(x = 2028, y = k$dyn_calc[which(k$year == 2028)])
+  circle9 <- reactiveValues(x = 2029, y = k$dyn_calc[which(k$year == 2029)])
+  circle10 <- reactiveValues(x = 2030, y = k$dyn_calc[which(k$year == 2030)])
+  circle11 <- reactiveValues(x = 2031, y = k$dyn_calc[which(k$year == 2031)])
+  circle12 <- reactiveValues(x = 2032, y = k$dyn_calc[which(k$year == 2032)])
+  circle13 <- reactiveValues(x = 2033, y = k$dyn_calc[which(k$year == 2033)])
+  circle14 <- reactiveValues(x = 2034, y = k$dyn_calc[which(k$year == 2034)])
+  circle15 <- reactiveValues(x = 2035, y = k$dyn_calc[which(k$year == 2035)])
+  circle16 <- reactiveValues(x = 2036, y = k$dyn_calc[which(k$year == 2036)])
+  circle17 <- reactiveValues(x = 2037, y = k$dyn_calc[which(k$year == 2037)])
+  circle18 <- reactiveValues(x = 2038, y = k$dyn_calc[which(k$year == 2038)])
+  circle19 <- reactiveValues(x = 2039, y = k$dyn_calc[which(k$year == 2039)])
+  circle20 <- reactiveValues(x = 2040, y = k$dyn_calc[which(k$year == 2040)])
+  circle21 <- reactiveValues(x = 2041, y = k$dyn_calc[which(k$year == 2041)])
+
+  observeEvent({input$map_scatterplot_click},{
+    if(!is.null(input$map_view_change)){
+      if(map_view_change()[1] != input$map_view_change$longitude){
+        map_view_change(c(input$map_view_change$longitude,input$map_view_change$latitude, input$map_view_change$zoom))} 
+    }
+  })
+
+  observeEvent({input$button_clear},{
+    highlighting_city(c("Краснодар"))
+  })
+  output$id2 <-
+    renderUI({
+      req(input$test_check)
+      selectizeInput(inputId = "indicator_second_indicator",
+                     label = "Choose X Indicator",
+                     choices = indicator_input,
+                     options = list(create = TRUE), selected = indicator_input[2], multiple = FALSE)
+    })
+  output$id4 <-
+    renderUI({
+      req(input$test_check2)
+      checkboxInput("all_citys_check", "All citys", value = FALSE)
+    })
+  output$id7 <-
+    renderText({input$foo})
+  output$id3 <-
+    renderUI({
+      req(input$test_check2)
+      selectizeInput(inputId = "indicator_second_indicator2",
+                     label = "Choose X Indicator",
+                     choices = indicator_inp_2,
+                     options = list(create = TRUE), selected = indicator_inp_2[3], multiple = FALSE)
+    })
+
+
+  output$dazzle <- renderPlotly({
+    if(input$test_check2 == FALSE) {
+      lol = ""
+    }else{
+      if(!is.null(input$indicator_second_indicator2)){
+      lol <- input$indicator_second_indicator2
+      if(!is.null(input$fo)){
+        if(lol == input$fo){
+          lol = ""
+        }
+      }
+      }else{
+        lol = ""
+      }
+    }
+    if(input$foo != "" & input$f != "" & input$fo != "" & !(lol == "" & input$test_check2 == TRUE)){
+    p <- func(df,input$fo,input$f,change_values_percent_vector(),input$foo,input$indicator_second_indicator2,input$test_check2,input$all_citys_check)
+    p %>%
+      layout(
+        images = list(
+          source = base64enc::dataURI(file = '3.img/15.png'),
+          x = 0.90, y = 1.05 ,
+          sizex = 0.10, sizey = 0.1,
+          xref = "paper", yref = "paper",
+          xanchor = "left", yanchor = "bottom"
+        ),
+        margin = list(t = 50)
+      )
+    }
+
+  })
+  output$map <- renderMapdeck({
+    
+    df_for_map = func_choose_indicator_to_map(input$indicator[1])
+    `%!in%` <- Negate(`%in%`)
+    df_for_map <- copy(df_for_map) %>% 
+       .[,color_of_city := "#FFFFFFFF"] %>%
+      .[name_location %in% highlighting_city(),color_of_city := "#710000FF"]
+
+    mapdeck(token = key, style = "mapbox://styles/nikita-burakov/ckw0ljvtv8xqb15o7newj1cwh/draft") %>%
+     add_scatterplot(
+       data = df_for_map
+       , fill_colour = "color_of_city"
+       , radius_min_pixels = 3
+       , radius_max_pixels = 25
+       , highlight_colour = "#5c5c5cFF"
+       , radius  =  'radius'
+       , auto_highlight = TRUE
+       , lat = "geo_lat"
+        , lon = "geo_lon"
+       , tooltip = "tooltip"
+       , layer_id = "citys_round"
+     ) %>%
+      mapdeck_view(
+        location = c(map_view_change()[1], map_view_change()[2]),
+        zoom = map_view_change()[3],
+      )
+  })
+  observeEvent({input$map_scatterplot_click},{
+
+    k <- as_string(input$map_scatterplot_click)
+    lat <- round(as.numeric(strsplit(x = strsplit(k, ',', fixed = T)[[1]][6], split = ':', fixed = T)[[1]][2]), digits = 5)
+    lon <- round(as.numeric(strsplit(x = strsplit(x = strsplit(k, ',', fixed = T)[[1]][7], split = ':', fixed = T)[[1]][2],split = "}", fixed = T)[[1]][1]), digits = 5)
+    df_to_map2 <- df_to_map %>% select(name_location,geo_lat, geo_lon) %>% mutate(error = (geo_lat - lat)**2 + (geo_lon - lon)**2) %>% arrange(error)
+    p <- df_to_map2[1,]$name_location
+        if (p %in% highlighting_city()) {
+      highlighting_city(replace(highlighting_city(),highlighting_city() == p , "yewrohsd"))
+    }else{
+      highlighting_city(c(highlighting_city(), p))
+    }
+
+  })
+  observeEvent({c(input$map_scatterplot_click,input$indicator, input$tf_vis,input$button_clear)},{
+
+    
+    df_for_map = func_choose_indicator_to_map(input$indicator[1])
+    `%!in%` <- Negate(`%in%`)
+    df_for_map <- copy(df_for_map) %>% 
+       .[,color_of_city := "#FFFFFFFF"] %>%
+      .[name_location %in% highlighting_city(),color_of_city := "#710000FF"]
+    if(input$tf_vis == TRUE){
+      mapdeck_update(map_id = "map") %>%
+        add_hexagon(
+          data = df_for_map
+          , lat = "geo_lat"
+          , lon = "geo_lon"
+          , layer_id = "hex_layer"
+          , elevation = "radius"
+          , colour = "radius"
+          , radius  =  5000
+          , elevation_scale = 300
+          , colour_range = c('#F8A505', '#80AE69',"#00B8D4","#00B8D4", "#00B8D4", "#00B8D4")
+          , highlight_colour = "#5c5c5cFF"
+          , auto_highlight = TRUE
+        ) %>% clear_scatterplot(layer_id = "citys_round") %>%
+        mapdeck_view(location = c(map_view_change()[1], map_view_change()[2]),
+                     zoom = map_view_change()[3],
+                     pitch = 45,
+                     transition = "fly")
+    }else{
+      mapdeck_update(map_id = "map") %>% clear_hexagon(layer_id = "hex_layer") %>%
+        add_scatterplot(
+          data = df_for_map
+          , fill_colour = "color_of_city"
+          , radius_min_pixels = 3
+          , radius_max_pixels = 25
+          , highlight_colour = "#5c5c5cFF"
+          , radius  =  'radius'
+          , auto_highlight = TRUE
+          , lat = "geo_lat"
+          , lon = "geo_lon"
+          , tooltip = "tooltip"
+          , layer_id = "citys_round"
+        ) %>%
+        mapdeck_view(
+          location = c(map_view_change()[1], map_view_change()[2]),
+          zoom = map_view_change()[3],  pitch = 0
+        )
+    }
+
+  })
+  url_capture2 <- eventReactive(eventExpr = input$norm,
+                                valueExpr = {
+                                  if (input$norm == TRUE) {t <- 1}else{t <- 0}
+                                  return(t)
+                                })
+  url_capture3 <- eventReactive(eventExpr = input$test_check,
+                                valueExpr = {
+                                  if (input$test_check == TRUE) {q <- 1}else{q <- 0}
+                                  return(q)
+                                })
+
+  output$map_plot <- renderPlotly({
+    p = highlighting_city()
+    t = url_capture2()
+    q =  url_capture3()
+    if(input$test_check == FALSE) {
+      kek = ""
+    }else{
+      if(!is.null(input$indicator_second_indicator)){
+        kek <- input$indicator_second_indicator
+        if(!is.null(input$indicator[1])){
+          if(kek %in% input$indicator){
+            kek = ""
+          }
+        }
+        }else{
+          kek = ""
+        }
+    }
+    if(!is.null(input$indicator[1]) & !(kek == "" & input$test_check == TRUE)){
+      p <- func_for_map_plot(df,indic = input$indicator,loc = p, norm = t, second_indic = kek,check2 = q)
+      p %>%
+      layout(
+        images = list(
+          source = base64enc::dataURI(file = '3.img/15.png'),
+          x = 0.82, y = 1.05 ,
+          sizex = 0.18, sizey = 0.1,
+          xref = "paper", yref = "paper",
+          xanchor = "left", yanchor = "bottom"
+        ),
+        margin = list(t = 50)
+      )}
+  })
+  
+  output$map_plot2 <- renderPlotly({
+    ind <- input$indicator[length(input$indicator)]
+    
+    if(!is.null(ind)){
+    temp <- copy(df) %>% 
+      .[name_indicator == ind & year == 2023, c("name_location","dyn_calc")] %>% 
+      arrange(-dyn_calc) %>% 
+      .[1:5]
+    
+    plot_ly(x = ~temp$dyn_calc, y = ~reorder(temp$name_location, temp$dyn_calc), type = 'bar', orientation = 'h',
+            marker = list(color = '#FFA50088',
+                          line = list(color = '#FFA500', width = 1))) %>% 
+      layout(yaxis = list(showgrid = FALSE, showline = FALSE, showticklabels = TRUE),
+             xaxis = list(zeroline = FALSE, showline = FALSE, showticklabels = TRUE, showgrid = TRUE)) %>% 
+      layout(title = FALSE, xaxis = list(title = "Value"), yaxis = list(title = ""))%>%
+      layout(
+        images = list(
+          source = base64enc::dataURI(file = '3.img/17.png'),
+          x = 0.82, y = 1.05 ,
+          sizex = 0.18, sizey = 0.1,
+          xref = "paper", yref = "paper",
+          xanchor = "left", yanchor = "bottom"
+        ),
+        margin = list(t = 50)
+      )
+    }
+  })
+  
+  output$map_plot3 <- renderPlotly({
+    ind <- input$indicator[length(input$indicator)]
+    loc <- highlighting_city()
+    
+    if(!is.null(ind) & !is.null(loc)){
+      screen <- copy(df) %>% 
+        .[,c("year","name_location","name_indicator","dyn_calc")] %>% 
+        merge(.,df[name_indicator == "Численность населения на 1 января текущего года",c("name_location","year","dyn_calc")] %>%
+                setnames("dyn_calc","people"), by = c("name_location","year"), all.x = TRUE) %>%
+        na.omit() %>% 
+        .[,var := -(sqrt(var(dyn_calc))/dyn_calc)*100, by = c("name_location", "name_indicator")] %>% 
+        .[var > -150 & var < 0] %>% 
+        .[,var := var+100] %>% 
+        .[name_indicator == ind & year == 2023]
+      
+      
+      plot_ly() %>%
+        add_trace(x = screen$dyn_calc, y = screen$var,color = I("#F4F4F4"),size = screen$people, name = "Все города",
+                  text = screen$name_location,
+                  hovertemplate = paste('<b>',ind,'</b>: %{x:.2f}',
+                                        '<br><b>Стабильность, %</b>: %{y:.2f}<br>',
+                                        '<b>%{text}</b>')) %>%
+        add_trace(x = screen[name_location %in% loc]$dyn_calc, y = screen[name_location %in% loc]$var,color = I("#FFA500"),marker = list(size = 15), name = "Выбранные города",
+                  text = loc,
+                  hovertemplate = paste('<b>',ind,'</b>: %{x:.2f}',
+                                        '<br><b>Стабильность, %</b>: %{y:.2f}<br>',
+                                        '<b>%{text}</b>')) %>%#,symbol = I('x')
+        layout(plot_bgcolor = '#343a40') %>%
+        layout(paper_bgcolor = '#343a40') %>%
+        layout(font = t) %>%
+        layout(legend = list(
+          orientation = "h",y = -0.25))  %>%
+        layout(xaxis = list(gridcolor = '#6c757d',type = "log"),
+               yaxis = list(gridcolor = '#6c757d')) %>% 
+        layout(title = FALSE, xaxis = list(title = "Value"), yaxis = list(title = "Stability, %")) %>%
+        layout(
+          images = list(
+            source = base64enc::dataURI(file = '3.img/15.png'),
+            x = 0.82, y = 1.05 ,
+            sizex = 0.18, sizey = 0.1,
+            xref = "paper", yref = "paper",
+            xanchor = "left", yanchor = "bottom"
+          ),
+          margin = list(t = 50)
+        )
+    }
+  })
+  
+  
+  # ------------------------------------------------------------------------
+  observeEvent({c(input$f,input$foo)},{
+  if(input$foo != "" & input$f != "") {
+  k <- func2(df,input$f,input$foo)
+
+
+
+  circle_df <- tibble(x = 2022:2041, y = k$dyn_calc[which(k$year >= 2022 & k$year <= 2041)])
+
+
+
+
+
+
+  circle2$x = 2022
+  circle2$y = k$dyn_calc[which(k$year == 2022)]
+  circle3$x = 2023
+  circle3$y = k$dyn_calc[which(k$year == 2023)]
+  circle4$x = 2024
+  circle4$y = k$dyn_calc[which(k$year == 2024)]
+  circle5$x = 2025
+  circle5$y = k$dyn_calc[which(k$year == 2025)]
+  circle6$x = 2026
+  circle6$y = k$dyn_calc[which(k$year == 2026)]
+  circle7$x = 2027
+  circle7$y = k$dyn_calc[which(k$year == 2027)]
+  circle8$x = 2028
+  circle8$y = k$dyn_calc[which(k$year == 2028)]
+  circle9$x = 2029
+  circle9$y = k$dyn_calc[which(k$year == 2029)]
+  circle10$x = 2030
+  circle10$y = k$dyn_calc[which(k$year == 2030)]
+  circle11$x = 2031
+  circle11$y = k$dyn_calc[which(k$year == 2031)]
+  circle12$x = 2032
+  circle12$y = k$dyn_calc[which(k$year == 2032)]
+  circle13$x = 2033
+  circle13$y = k$dyn_calc[which(k$year == 2033)]
+  circle14$x = 2034
+  circle14$y = k$dyn_calc[which(k$year == 2034)]
+  circle15$x = 2035
+  circle15$y = k$dyn_calc[which(k$year == 2035)]
+  circle16$x = 2036
+  circle16$y = k$dyn_calc[which(k$year == 2036)]
+  circle17$x = 2037
+  circle17$y = k$dyn_calc[which(k$year == 2037)]
+  circle18$x = 2038
+  circle18$y = k$dyn_calc[which(k$year == 2038)]
+  circle19$x = 2039
+  circle19$y = k$dyn_calc[which(k$year == 2039)]
+  circle20$x = 2040
+  circle20$y = k$dyn_calc[which(k$year == 2040)]
+  circle21$x = 2041
+  circle21$y = k$dyn_calc[which(k$year == 2041)]
+
+  # if_grep <- function(number_circle){
+  #
+  #   k <- paste0("shapes\\[",number_circle-1,"\\]")
+  #   if (grepl(k, names(ed)[number_circle])) {
+  #     circle1$y <- ed[[2]]
+  #     change_values_percent$x$v1 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == number_circle+2020)])*100
+  #   }
+  #
+  #
+  # }
+  #
+  observe(
+    {
+      ed <- event_data("plotly_relayout")
+      req(ed)
+      isolate(
+        {
+
+          if (grepl("shapes\\[0\\]", names(ed)[1])) {
+            circle2$y <- ed[[2]]
+            change_values_percent$x$v2 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2022)])*100
+          }
+          if (grepl("shapes\\[1\\]", names(ed)[1])) {
+            circle3$y <- ed[[2]]
+            change_values_percent$x$v3 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2023)])*100
+          }
+          if (grepl("shapes\\[2\\]", names(ed)[1])) {
+            circle4$y <- ed[[2]]
+            change_values_percent$x$v4 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2024)])*100
+          }
+          if (grepl("shapes\\[3\\]", names(ed)[1])) {
+            circle5$y <- ed[[2]]
+            change_values_percent$x$v5 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2025)])*100
+          }
+          if (grepl("shapes\\[4\\]", names(ed)[1])) {
+            circle6$y <- ed[[2]]
+            change_values_percent$x$v6 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2026)])*100
+          }
+          if (grepl("shapes\\[5\\]", names(ed)[1])) {
+            circle7$y <- ed[[2]]
+            change_values_percent$x$v7 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2027)])*100
+          }
+          if (grepl("shapes\\[6\\]", names(ed)[1])) {
+            circle8$y <- ed[[2]]
+            change_values_percent$x$v8 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2028)])*100
+          }
+          if (grepl("shapes\\[7\\]", names(ed)[1])) {
+            circle9$y <- ed[[2]]
+            change_values_percent$x$v9 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2029)])*100
+          }
+          if (grepl("shapes\\[8\\]", names(ed)[1])) {
+            circle10$y <- ed[[2]]
+            change_values_percent$x$v10 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2030)])*100
+          }
+          if (grepl("shapes\\[9\\]", names(ed)[1])) {
+            circle11$y <- ed[[2]]
+            change_values_percent$x$v11 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2031)])*100
+          }
+          if (grepl("shapes\\[10\\]", names(ed)[1])) {
+            circle12$y <- ed[[2]]
+            change_values_percent$x$v12 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2032)])*100
+          }
+          if (grepl("shapes\\[11\\]", names(ed)[1])) {
+            circle13$y <- ed[[2]]
+            change_values_percent$x$v13 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2033)])*100
+          }
+          if (grepl("shapes\\[12\\]", names(ed)[1])) {
+            circle14$y <- ed[[2]]
+            change_values_percent$x$v14 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2034)])*100
+          }
+          if (grepl("shapes\\[13\\]", names(ed)[1])) {
+            circle15$y <- ed[[2]]
+            change_values_percent$x$v15 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2035)])*100
+          }
+          if (grepl("shapes\\[14\\]", names(ed)[1])) {
+            circle16$y <- ed[[2]]
+            change_values_percent$x$v16 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2036)])*100
+          }
+          if (grepl("shapes\\[15\\]", names(ed)[1])) {
+            circle17$y <- ed[[2]]
+            change_values_percent$x$v17 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2037)])*100
+          }
+          if (grepl("shapes\\[16\\]", names(ed)[1])) {
+            circle18$y <- ed[[2]]
+            change_values_percent$x$v18 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2038)])*100
+          }
+          if (grepl("shapes\\[17\\]", names(ed)[1])) {
+            circle19$y <- ed[[2]]
+            change_values_percent$x$v19 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2039)])*100
+          }
+          if (grepl("shapes\\[18\\]", names(ed)[1])) {
+            circle20$y <- ed[[2]]
+            change_values_percent$x$v20 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2040)])*100
+          }
+          if (grepl("shapes\\[19\\]", names(ed)[1])) {
+            circle21$y <- ed[[2]]
+            change_values_percent$x$v21 <- 100 - (ed[[2]]/k$dyn_calc[which(k$year == 2041)])*100
+          }
+        }
+      )
+    }
+  )
+
+
+
+
+  #Create plot
+  output$Draggable_Graph <- renderPlotly(
+    {
+
+      circles <- map(
+        list(circle2,circle3,circle4,circle5,circle6,circle7,circle8,circle9,circle10,circle11,circle12,circle13,circle14,circle15,circle16,circle17,circle18,circle19,circle20,circle21),
+        ~{
+          list(
+            type = "circle",
+            xanchor = floor(.x$x),
+            yanchor = .x$y,
+            x0 = -5,
+            y0 = -5,
+            x1 = 5,
+            y1 = 5,
+            xsizemode = "pixel",
+            ysizemode = "pixel",
+            # other visual properties
+            fillcolor = "orange",
+            line = list(color = "transparent"),
+            layer = "below"
+          )
+        }
+      )
+      change_values_percent_vector(c(change_values_percent$x$v2,change_values_percent$x$v3,change_values_percent$x$v4,change_values_percent$x$v5,change_values_percent$x$v6,change_values_percent$x$v7,change_values_percent$x$v8,change_values_percent$x$v9,change_values_percent$x$v10,change_values_percent$x$v11,change_values_percent$x$v12,change_values_percent$x$v13,change_values_percent$x$v14,change_values_percent$x$v15,change_values_percent$x$v16,change_values_percent$x$v17,change_values_percent$x$v18,change_values_percent$x$v19,change_values_percent$x$v20,change_values_percent$x$v21))
+      if(input$foo != "" & input$f != ""){
+      k2 <-  func2(df,input$f,input$foo)
+
+      new_graf_from_user <- function(namber_of_year){
+
+        k2$dyn_calc[which(k2$year == namber_of_year)] <<- k2$dyn_calc[which(k2$year == namber_of_year)] -
+          k2$dyn_calc[which(k2$year == namber_of_year)]*change_values_percent_vector()[namber_of_year - 2021]/100
+      }
+
+
+      2022:2041 %>% map(~ new_graf_from_user(.))
+      plot_ly() %>%
+        add_lines(x = k$year, y = k$dyn_calc,mode = 'lines', name = 'Inertia Forecast', color = I("deepskyblue")) %>%
+        add_lines(x = k2$year, y = k2$dyn_calc,mode = 'lines', name = 'Your Regulation', color = I("orange")) %>%
+        layout(shapes = circles) %>%
+        config(edits = list(shapePosition = TRUE)) %>% 
+        layout(plot_bgcolor = '#FFFFFF') %>%
+        layout(paper_bgcolor = '#FFFFFF') %>%
+        layout(font = tcoy) %>%
+        layout(legend = list(
+          orientation = "h",y = -0.25))  %>%
+        layout(xaxis = list(gridcolor = '#6c757d55'),
+               yaxis = list(gridcolor = '#6c757d55')) %>% 
+        layout(title = FALSE, xaxis = list(title = "Year")) %>%
+        add_annotations(
+          text = paste0(input$f,", ", spravka$eng_name[which(spravka$id == indicator$unit_id[which(indicator$long_name == input$f)])]),
+          x = 0,
+          y = 1,
+          yref = "paper",
+          xref = "paper",
+          xanchor = "left",
+          yanchor = "bottom",
+          showarrow = FALSE,
+          font = list(
+            size = 19))%>%
+        layout(
+          images = list(
+            source = base64enc::dataURI(file = '3.img/17.png'),
+            x = 0.90, y = 1.05 ,
+            sizex = 0.10, sizey = 0.1,
+            xref = "paper", yref = "paper",
+            xanchor = "left", yanchor = "bottom"
+          ),
+          margin = list(t = 50)
+        )
+      }
+    })
+  }
+  })
+  observeEvent({input$button2},{
+    change_values_percent_vector(rep(0,20))
+    k <- func2(df,input$f,input$foo)
+    circle2$x = 2022
+    circle2$y = k$dyn_calc[which(k$year == 2022)]
+    circle3$x = 2023
+    circle3$y = k$dyn_calc[which(k$year == 2023)]
+    circle4$x = 2024
+    circle4$y = k$dyn_calc[which(k$year == 2024)]
+    circle5$x = 2025
+    circle5$y = k$dyn_calc[which(k$year == 2025)]
+    circle6$x = 2026
+    circle6$y = k$dyn_calc[which(k$year == 2026)]
+    circle7$x = 2027
+    circle7$y = k$dyn_calc[which(k$year == 2027)]
+    circle8$x = 2028
+    circle8$y = k$dyn_calc[which(k$year == 2028)]
+    circle9$x = 2029
+    circle9$y = k$dyn_calc[which(k$year == 2029)]
+    circle10$x = 2030
+    circle10$y = k$dyn_calc[which(k$year == 2030)]
+    circle11$x = 2031
+    circle11$y = k$dyn_calc[which(k$year == 2031)]
+    circle12$x = 2032
+    circle12$y = k$dyn_calc[which(k$year == 2032)]
+    circle13$x = 2033
+    circle13$y = k$dyn_calc[which(k$year == 2033)]
+    circle14$x = 2034
+    circle14$y = k$dyn_calc[which(k$year == 2034)]
+    circle15$x = 2035
+    circle15$y = k$dyn_calc[which(k$year == 2035)]
+    circle16$x = 2036
+    circle16$y = k$dyn_calc[which(k$year == 2036)]
+    circle17$x = 2037
+    circle17$y = k$dyn_calc[which(k$year == 2037)]
+    circle18$x = 2038
+    circle18$y = k$dyn_calc[which(k$year == 2038)]
+    circle19$x = 2039
+    circle19$y = k$dyn_calc[which(k$year == 2039)]
+    circle20$x = 2040
+    circle20$y = k$dyn_calc[which(k$year == 2040)]
+    circle21$x = 2041
+    circle21$y = k$dyn_calc[which(k$year == 2041)]
+    for (i in 1:21) {
+      change_values_percent$x[i] = 0
+    }
+
+  })
+  output$texttitle <- renderText({paste0('Панель управления "Умный город"')})
+  output$text1 <- renderText({paste0('Выбранный показатель: ',last(indicator_input_for_map()))})
+  
+  observeEvent(input$sidebarItemExpanded, {
+    if(input$sidebarItemExpanded == "Мониторинг"){
+      updateTabItems(session, "sbMenu", selected = "monitoring")
+    }
+  })
+  observeEvent(input$sidebarItemExpanded, {
+    if(input$sidebarItemExpanded == "Оценкавлияния"){
+      updateTabItems(session, "sbMenu", selected = "influense")
+    }
+  })
+}
+

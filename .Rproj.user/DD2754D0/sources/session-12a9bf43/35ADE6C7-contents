@@ -1,0 +1,123 @@
+function(input, output, session){
+  # Authentithication
+  source("ui.R", local = TRUE)
+  USER <- reactiveValues(login = FALSE)
+  print(observe(USER$login))
+  browser()
+  observe({ 
+    if (USER$login == FALSE) {
+      if (!is.null(input$login)) {
+        if (input$login > 0) {
+          Username <- isolate(input$userName)
+          Password <- isolate(input$passwd)
+          if(length(which(credentials$username_id==Username))==1) { 
+            pasmatch  <- credentials["passod"][which(credentials$username_id==Username),]
+            pasverify <- password_verify(pasmatch, Password)
+            if(pasverify) {
+              USER$login <- TRUE
+            } else {
+              shinyjs::toggle(id = "nomatch", anim = TRUE, time = 1, animType = "fade")
+              shinyjs::delay(3000, shinyjs::toggle(id = "nomatch", anim = TRUE, time = 1, animType = "fade"))
+            }
+          } else {
+            shinyjs::toggle(id = "nomatch", anim = TRUE, time = 1, animType = "fade")
+            shinyjs::delay(3000, shinyjs::toggle(id = "nomatch", anim = TRUE, time = 1, animType = "fade"))
+          }
+        } 
+      }
+    }    
+  })
+  
+  output$logoutbtn <- renderUI({
+    req(USER$login)
+    tags$a(icon("fa fa-sign-out"), "Выйти", href = "javascript:window.location.reload(true)", style = "text-align: right;")  #  style = "background-color: #eee !important; border: 0; font-weight: bold; margin:5px; padding: 10px;"
+  })
+  output$dash_body <- renderUI({ if(USER$login == TRUE ) dash_body else loginpage })
+  
+  
+  # Reactive values
+  re <- eventReactive(input$launch, {
+    set_invstmnt <- input$set_invstmnt*1e6
+    loan_rate <- input$loan_rate/100
+    loan_part <- input$loan_part/100
+    if(input$asst_rt_sw == FALSE){asst_rt <- NA}else{asst_rt <- input$asst_rt/100}
+    
+    #if(input$set_msp == ""){set_msp <- NA}else{set_msp <- input$set_msp}
+    if(input$set_okfs_grp == ""){set_okfs_grp <- NA}else{set_okfs_grp <- input$set_okfs_grp}
+    set_year <- as.numeric(input$set_year)
+    set_period <- as.numeric(input$set_period)
+    
+    pay_rate <- input$pay_rate/100
+    risk_free_rate <- input$risk_free_rate/100
+    if(input$set_years2invest == "не известно"){set_years2invest <- NA}else{set_years2invest <- as.integer(input$set_years2invest)}
+    
+    args <- list(set_invstmnt, input$set_okved, input$set_oktmo, asst_rt, loan_rate, loan_part,
+                 set_okfs_grp, set_year, pay_rate, risk_free_rate, set_period, set_years2invest) %>%
+      purrr::set_names(c("set_invstmnt", "set_okved", "set_oktmo", "set_asst_rt", "loan_rate",
+                         "loan_part", "set_okfs_grp", "set_year", "pay_rate", "risk_free_rate", "set_period", "set_years2invest"))
+    
+    shinybusy::show_modal_spinner(spin = "cube-grid", color = "darkcyan") # show the modal window
+    res <- rlang::exec("get_CF", !!!args)
+    shinybusy::remove_modal_spinner() # remove it when done
+    res
+    #asst_rt
+  })
+  re_scenario <- reactive({filter(re()$CF, scenario == input$set_scenario)})
+  re_period <- reactive({length(re()$period)})
+  
+  # Output objects
+  output$debug <- renderPrint({length(re()$period)})
+  output$invest_opprt_mssg <- renderPrint({
+    inv_opprt <- inv_opprt[okved == input$set_okved & oktmo == input$set_oktmo & year == input$set_year]
+    if(nrow(inv_opprt) == 0){cat("Для данного сочетания города и отрасли отсутсвуют сведения об инвестиционных потенциалах")}else{cat("Использовано инвестиционного потенциала")}})
+  observeEvent(list(input$set_invstmnt, input$set_oktmo, input$set_okved, input$set_year), {
+    inv_opprt <- inv_opprt[okved == input$set_okved & oktmo == input$set_oktmo & year == input$set_year][["inv_opprt"]]
+    shinyWidgets::updateProgressBar(session = session, id = "pb", value = 100*input$set_invstmnt/inv_opprt)})
+  # Value Boxes
+  output$IRR <- renderPrint({pull(re_scenario(), IRR) %>% {if(is.na(.))"отсутсвует"else{scales::percent(., 0.01)}} %>% cat()})
+  output$NPV <- renderPrint({pull(re_scenario(), NPV) %>% scales::dollar(1, suffix = " млн.", prefix = "\u20BD") %>% cat()})
+  output$PP <- renderPrint({pull(re_scenario(), PP) %>% {if(is.na(.))"отсутсвует"else{str_c(., " лет")}} %>% cat()})
+  output$PI <- renderPrint({pull(re_scenario(), PI) %>% round(3) %>% cat()}) #%>% scales::percent(0.01)
+  output$period1 <- renderPrint({re_period() %>% str_c(" лет") %>% cat()})
+  output$period2 <- renderPrint({re_period() %>% str_c(" лет") %>% cat()})
+  # Info Boxes
+  output$qnty <- renderPrint({filter(re()$best_scnrs, scenario == input$set_scenario) %>% pull(qnty) %>%  cat()})
+  output$term <- renderPrint({filter(re()$best_scnrs, scenario == input$set_scenario) %>% pull(term) %>%  cat()})
+  output$fixed_assts <- renderPrint({filter(re()$best_scnrs, scenario == input$set_scenario) %>% pull(fixed_assts) %>% scales::dollar(scale = 1e-6, prefix = "\u20BD") %>% cat()})
+  output$current_funds <- renderPrint({filter(re()$best_scnrs, scenario == input$set_scenario) %>% pull(current_funds) %>% scales::dollar(scale = 1e-6, prefix = "\u20BD") %>% cat()})
+  # Funds structure
+  output$plot_bayes_asst_rt <- renderPlot({
+    GF1 <- GF[okved_dtld == input$set_okved & oktmo == input$set_oktmo]
+    validate(need(fnrow(GF1) > 1, message = "Для указанного сочетания города и отрасли отсутсвуют примеры"))
+    plot_bayes_asst_rt(GF1)})
+  output$plot_bayes_rvn <- renderPlot({
+    GF1 <- GF[okved_dtld == input$set_okved & oktmo == input$set_oktmo]
+    validate(need(fnrow(GF1) > 1, message = "Для указанного сочетания города и отрасли отсутсвуют примеры"))
+    plot_bayes_rvn(GF1)})
+  output$plot_bayes_COGS <- renderPlot({
+    GF1 <- GF[okved_dtld == input$set_okved & oktmo == input$set_oktmo]
+    validate(need(fnrow(GF1) > 1, message = "Для указанного сочетания города и отрасли отсутсвуют примеры"))
+    plot_bayes_COGS(GF1)})
+  output$tbl_bayes <- renderDT(style = "bootstrap4", {
+    GF[okved_dtld %in% input$set_okved & oktmo %in% input$set_oktmo][, `:=` (rvn = round(rvn), asst_rt = round(asst_rt, 2), invest_TA = round(invest_TA))] %>%
+      select(ИНН = inn, Наименование = name, Адрес = adr, Год = year, ОКАТО = oktmo, ОКФС = okfs, Доля = asst_rt, ОКВЭД = okved_dtld, Выручка = rvn, Инвестиции = invest_TA)})
+  # Industries
+  output$okved_asst_rt <- renderPlotly({plot_okved_effect(set_mdl = asst_rt_mdl, set_okved = input$set_okved)})
+  output$okved_rvn <- renderPlotly({plot_okved_effect(set_mdl = rvn_mdl, set_okved = input$set_okved)})
+  output$okved_COGS <- renderPlotly({plot_okved_effect(set_mdl = COGS_mdl, set_okved = input$set_okved)})
+  output$okved_SGnA <- renderPlotly({plot_okved_effect(set_mdl = SGnA_mdl, set_okved = input$set_okved)})
+  # Cities
+  output$oktmo_asst_rt <- renderPlotly({plot_oktmo_effect(set_mdl = asst_rt_mdl, set_oktmo = input$set_oktmo)})
+  output$oktmo_rvn <- renderPlotly({plot_oktmo_effect(set_mdl = rvn_mdl, set_oktmo = input$set_oktmo)})
+  output$oktmo_COGS <- renderPlotly({plot_oktmo_effect(set_mdl = COGS_mdl, set_oktmo = input$set_oktmo)})
+  output$oktmo_SGnA <- renderPlotly({plot_oktmo_effect(set_mdl = SGnA_mdl, set_oktmo = input$set_oktmo)})
+  
+  # Amortization structure
+  output$plot_amrtztn <- renderPlot({plot_amrtztn(re()$capital_structure)})
+  # Cash flow and scenarios
+  output$plot_CF <- renderPlot({res <- filter(re()$CF, scenario == input$set_scenario)
+  plot_CF(res$CF[[1]], res$scenario[[1]], as.numeric(input$set_year), res$PP[[1]])})
+  output$plot_scenario <- renderPlot({plot_scenario(re()$scnrs, re()$best_scnrs)})
+  # Report
+  output$tbl_report <- renderDT({tbl_scenario(re_scenario())})
+}

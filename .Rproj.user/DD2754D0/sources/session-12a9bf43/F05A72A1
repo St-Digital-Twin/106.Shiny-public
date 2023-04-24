@@ -1,0 +1,26 @@
+{
+    "id": "F05A72A1",
+    "path": "/docker/compose/dtwin/dcitysoft_v1/html/index.html",
+    "project_path": null,
+    "type": "html",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1682066856528.0,
+    "source_on_save": false,
+    "relative_order": 9,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "42,3",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1682069314,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1682069314240,
+    "read_only": false,
+    "read_only_alternatives": []
+}

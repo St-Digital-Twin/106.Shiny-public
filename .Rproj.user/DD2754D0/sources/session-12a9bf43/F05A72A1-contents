@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- css -->
+    <link rel="stylesheet" href="css/pure-min.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <!-- javascript -->
+    <script src="js/app.js"></script>
+    <style>
+   .layer1 {
+    width: 1024px; /* Ширина блока */
+    background: #ffffc2; /* Цвет фона */
+    padding: 7px; /* Поля вокруг текста */
+
+   }
+
+   }
+  </style>
+
+    <title>Цифровой двойник города</title>
+</head>
+<body class="layer1"> <h1>Программа Цифровой двойник города</h1>  <a href="https://dtwin.ru/city_soft" target="_blank">Официальный сайт</a></p>
+
+ПО “Цифровой двойник города” позволяет пользователю получить статистические и прогнозные ряды данных социально-экономического развития городов Российской Федерации в различных представлениях, таких как
+<ul>
+  <li>табличные – получение данных с необходими фильтрами</li>
+   <li>json формат данных</li>
+<li>картографические - отображение информации в виде столбчатых диаграмм с градиентной заливкой на карте РФ</li>
+<li>линейные - отображение информации в виде линейных диаграмм в различных системах координат</li>
+
+  </ul>
+
+<h2>Ссылки на веб-сервисы:</h2>
+
+<p><a href="https://dtwin.ru/city_soft/manual" target="_blank">Руководство по экпслуатации&nbsp;</p>
+<p><a href="http://db-valera.dtwin.ru:4002" target="_blank">Стартовая страница с описанием</a>&nbsp;</p>
+
+<p><a href="http://db-valera.dtwin.ru:4003" target="_blank">REST API JSON ответ от БД</a></p>
+
+<p><a href="http://db-valera.dtwin.ru:4004" target="_blank">Панель &nbsp;Swagger&nbsp;</a></p>
+
+<p><a href="http://db-valera.dtwin.ru:4001" target="_blank">Панель управления БД Pgadmin&nbsp;&nbsp;</a></p>
+<p><a href="http://db-valera.dtwin.ru:4010" target="_blank">Модуль2: аналитика, визуализация</a></p>
+
+
+<p>Планы и ваши предложения:&nbsp;<a href="https://docs.google.com/spreadsheets/d/1NhiCJVA5b76w4n0tqyICiizPH0lIBvossEMe1fay9lk/edit#gid=0" target="_blank">https://docs.google.com/spreadsheets/d/1NhiCJVA5b76w4n0tqyICiizPH0lIBvossEMe1fay9lk/edit#gid=0</a></p>
+
+<p>&nbsp;</p>
+
+<p>Для работы с JSON и Swagger полезно прочитать про синтаксис :&nbsp;<a href="https://postgrest.org/en/stable/api.html" target="_blank">https://postgrest.org/en/stable/api.html</a></p>
+
+<h2>Примеры:</h2>
+
+<p>1.&nbsp;<a href="http://db-valera.dtwin.ru:4003/unit" target="_blank">http://db-valera.dtwin.ru:4003/unit</a><br />
+2. <a href="http://db-valera.dtwin.ru:4003/location?long_name=eq.Норильск" target="_blank">http://db-valera.dtwin.ru:4003/location?long_name=eq.Норильск</a><br />
+3. <a href="http://db-valera.dtwin.ru:4003/location?id=lte.5000&amp;order=id" target="_blank">http://db-valera.dtwin.ru:4003/location?id=lte.5000&amp;order=id</a><br />
+4. <a href="http://db-valera.dtwin.ru:4003/location?long_name=like.*ское" target="_blank">http://db-valera.dtwin.ru:4003/location?long_name=like.*ское</a><br />
+5. <a href="http://db-valera.dtwin.ru:4003/location?long_name=like.*ское&amp;id=lte.10000&amp;select=id,name:long_name" target="_blank">http://db-valera.dtwin.ru:4003/location?long_name=like.*ское&amp;id=lte.10000&amp;select=id,name:long_name</a><br />
+6. <a href="http://db-valera.dtwin.ru:4003/maintable?limit=15&amp;offset=30" target="_blank">http://db-valera.dtwin.ru:4003/maintable?limit=15&amp;offse
+=30</a></p>
+
+
+<p>Примеры:</p>
+
+
+<p>&nbsp;</p>
+
+<p>7. Те же запросы можно делать через командную строку:&nbsp;curl &quot;<a href="http://db-valera.dtwin.ru:4003/maintable?limit=15&amp;offset=30">http://db-valera.dtwin.ru:4003/maintable?limit=15&amp;offset=30</a>&quot;</p>
+
+<p>&nbsp;</p>
+
+
+
+<p>&nbsp;</p>
+
+<p>8. POST :  Insert: &nbsp;curl &quot;http://db-valera.dtwin.ru:4003/unit&quot; &nbsp;\<br />
+&nbsp; -X POST -H &quot;Content-Type: application/json&quot; \<br />
+&nbsp; -d &#39;{ &quot;id&quot;: 72, &quot;unique_name&quot;: &quot;много&quot;}&#39;</p>
+
+<p>9. POST: Bulk insert:&nbsp;curl "http://db-valera.dtwin.ru:4003/unit"  \<br />
+  -X POST -H "Content-Type: application/json" \
+  -d @- << EOF \<br />
+  [
+    { "id":74, "long_name":"NA", "description":"NA","unique_name":"ни то ни се","eng_name":"a few"},\<br />
+    { "id":73, "long_name":"NA", "description":"NA","unique_name":"мало","eng_name":"little"}\<br />
+  ]
+EOF</p>
+
+
+<p>&nbsp;</p>
+
+<p>10. Updates:   PATCH: \<br />&nbsp;curl "http://db-valera.dtwin.ru:4003/unit?unique_name=like.*руб*"  \
+  -X PATCH -H "Content-Type: application/json" \
+  -d '{ "long_name": "тугрик" }'</p>
+
+<p>11. PUT:  \<br />curl "http://db-valera.dtwin.ru:4003/unit?id=eq.74" \
+  -X PUT -H "Content-Type: application/json" \
+  -d  '{ "id":74, "long_name":"NA", "description":"NA","unique_name":"несколько","eng_name":"some"}'</p>
+<p>12.  Delete:  \<br>
+curl "http://db-valera.dtwin.ru:4003/unit?id=eq.1" -X DELETE   -H "Prefer: return=representation"
+
+&nbsp;</p>
+<p>Additional functions:&nbsp;</p>
+
+<p>13.&nbsp;<a href="http://db-valera.dtwin.ru:4003/find_dups" target="_blank" >find duplicates in maintable</a><br />
+
+
+
+
+
+<p>&nbsp;</p>
+
+    <div class="pure-g">
+        <div class="pure-u-1-8"></div>
+        <div class="pure-u-3-4">
+            <h1>Населенные пункты</h1>
+            <p> поиск по справочнику location (по названию н.п.)</p>
+            <form class="pure-form" onsubmit="event.preventDefault(); app.searchClick()">
+                <fieldset>
+                    <input id="city-input" type="text" placeholder="название,(например: ское)" required>
+                    <input type="submit" class="pure-button pure-button-primary" value="Search">
+                </fieldset>
+            </form>
+
+            <table class="pure-table pure-table-bordered pure-table-striped hidden" id="results-table">
+                <thead>
+                    <th>long_name</th>
+                    <th>oktmo</th>
+                    <th>okato</th>
+                    <th>long_name_eng</th>
+                </thead>
+                <tbody id="results-table-body">
+                </tbody>
+            </table>
+        </div>
+        <div class="pure-u-1-8"></div>
+    </div>
+</body>
+</html>
